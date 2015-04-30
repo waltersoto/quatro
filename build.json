@@ -1,0 +1,12 @@
+﻿{
+  "package":"quatro",
+  "version":"0.0.1",
+  "source":"./source",
+  "release":"./release",
+  "actions":[{ "type":"bundle",
+               "filename":"{package}.{version}.js",
+				        "settings":[{"key":"enclose","value":"release.js"},
+							              {"key":"license","value":"license.txt"}] 
+			       },
+			       {"type":"minify","filename":"{filename}.min.{extension}","ignore":["*.min.*"]}]
+}
