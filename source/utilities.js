@@ -1,6 +1,8 @@
-﻿var isFunction = "function";
+﻿
 
-function noNullOrUndefined(o) {
+var IS_FUNCTION = "function";
+
+function notNullOrUndefined(o) {
     return o !== null && typeof o !== "undefined";
 }
 function contains(str, substring) {

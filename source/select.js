@@ -1,13 +1,64 @@
-﻿var get = function () {
+﻿
 
-    var list = [], doc = document;
+var Selected = function(l) {
+    var lst = l;
+    this.count = function() {
+        return lst.length;
+    };
 
+    this.all = function() {
+        return lst;
+    };
+
+    this.first = function() {
+
+        if (typeof lst !== "undefined" && lst.length > 0) {
+            return lst[0];
+        }
+        return null;
+    }
+
+    this.last = function() {
+        if (typeof lst !== "undefined" && lst.length > 0) {
+            return lst[lst.length - 1];
+        }
+        return null;
+    }
+
+    this.each = function(callback) {
+        if (typeof lst !== "undefined" && lst.length > 0) {
+            for (var ei = 0, em = lst.length; ei < em; ei++) {
+                if (typeof callback === "function") {
+                    callback(lst[ei]);
+                }
+            }
+        }
+    };
+
+    this.where = function(callback) {
+        var subset = [];
+
+        if (typeof lst !== "undefined" && lst.length > 0) {
+            for (var ei = 0, em = lst.length; ei < em; ei++) {
+                if (typeof callback === IS_FUNCTION) {
+                    if (callback(lst[ei])) {
+                        subset.push(lst[ei]);
+                    }
+                }
+            }
+        }
+        return new Selected(subset);
+    }
+};
+
+var select = function () {
+    var list = [];
+    var doc = document;
     var multiple = function (arr) {
         for (var multi = 0, max = arr.length; multi < max; multi++) {
             list.push(arr[multi]);
         }
     };
-
     var $c = function (action) {
         var elem = action;
         if (elem !== null && typeof elem !== "undefined") {
@@ -27,7 +78,6 @@
 
         return false;
     };
-
     for (var i = 0, m = arguments.length; i < m; i++) {
         var arg = arguments[i];
         if (typeof arg === "string") {
@@ -65,37 +115,6 @@
         }
     }
 
-    return new function () {
-
-        this.all = function () {
-            return list;
-        };
-
-        this.first = function () {
-
-            if (typeof list !== "undefined" && list.length > 0) {
-                return list[0];
-            }
-            return null;
-        }
-
-        this.last = function () {
-            if (typeof list !== "undefined" && list.length > 0) {
-                return list[list.length - 1];
-            }
-            return null;
-        }
-
-        this.each = function (callback) {
-            if (typeof list !== "undefined" && list.length > 0) {
-                for (var ei = 0, em = list.length; ei < em; ei++) {
-                    if (typeof callback === "function") {
-                        callback(list[ei]);
-                    }
-                }
-            }
-        };
-
-    };
-
+    return new Selected(list);
 };
+

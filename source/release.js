@@ -1,11 +1,13 @@
-﻿(function(global) {
+﻿(function () {
     
-    //{utilities.js}
+//{utilities.js}
 
-    //{get.js}
+//{select.js}
 
-    if (!global.quatro) { 
-        global.quatro = global["quatro"] = quatro;
-    }
+//{events.js}
 
-})(window);
+//{instance.js}
+
+//{alias.js}
+
+})();
