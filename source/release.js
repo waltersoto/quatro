@@ -8,6 +8,8 @@
 
 //{events.js}
 
+//{element-utilities.js}
+
 //{alias.js}
 
 })();

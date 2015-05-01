@@ -1,6 +1,6 @@
 ﻿
 
-var Selected = function(l) {
+var selected = function(l) {
     var lst = l;
     this.count = function() {
         return lst.length;
@@ -47,74 +47,92 @@ var Selected = function(l) {
                 }
             }
         }
-        return new Selected(subset);
+        return new selected(subset);
     }
 };
 
-var select = function () {
-    var list = [];
-    var doc = document;
-    var multiple = function (arr) {
-        for (var multi = 0, max = arr.length; multi < max; multi++) {
-            list.push(arr[multi]);
-        }
-    };
-    var $c = function (action) {
-        var elem = action;
-        if (elem !== null && typeof elem !== "undefined") {
-            if (elem.length === 0) {
-                if (elem.length === 1) {
-                    list.push(elem[0]);
-                    return true;
-                } else if (elem.length > 1) {
-                    multiple(elem);
-                    return true;
-                }
-            } else {
-                list.push(elem);
-                return true;
+var fromSelect = function (parent) {
+
+    this.select = function() {
+
+        var list = [];
+        var doc = parent || document;
+        var multiple = function (arr) {
+            for (var multi = 0, max = arr.length; multi < max; multi++) {
+                list.push(arr[multi]);
             }
-        }
-
-        return false;
-    };
-    for (var i = 0, m = arguments.length; i < m; i++) {
-        var arg = arguments[i];
-        if (typeof arg === "string") {
-
-            if (arg.length > 0 && arg.charAt(0) === ".") {
-                if (doc.getElementsByClassName) {
-                    if ($c(doc.getElementsByClassName(arg.substring(1)))) {
-                        continue;
+        };
+        var $c = function (action) {
+            var elem = action;
+            if (elem !== null && typeof elem !== "undefined") {
+                if (!elem.length) {
+                    list.push(elem);
+                }else if (elem.length > 0) {
+                    if (elem.length === 1) {
+                        list.push(elem[0]);
+                        return true;
+                    } else if (elem.length > 1) {
+                        multiple(elem);
+                        return true;
                     }
                 }
             }
 
-            if ($c(doc.getElementById(arg))) {
-                continue;
-            }
+            return false;
+        };
+        for (var i = 0, m = arguments.length; i < m; i++) {
+            var arg = arguments[i];
+      
+            if (typeof arg === "string") {
 
-            if ($c(doc.getElementsByTagName(arg))) {
-                continue;
-            }
-
-            if ($c(doc.getElementsByName(arg))) {
-                continue;
-            }
-
-            if (doc.querySelectorAll) {
-                if ($c(doc.querySelectorAll(arg))) {
+                if (arg.length > 0 && arg.charAt(0) === ".") { 
+                    if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
+                        continue;
+                    } 
+                }
+              
+                if (doc.getElementById && $c(doc.getElementById(arg))) {
                     continue;
                 }
-            }
 
-        } else {
-            if (arg !== null && typeof arg !== "undefined") {
-                list.push(arg);
+                if ($c(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
+                    continue;
+                }
+
+                if ($c(doc.getElementsByName && doc.getElementsByName(arg))) {
+                    continue;
+                }
+                 
+                if ($c(doc.querySelectorAll && doc.querySelectorAll(arg))) {
+                    continue;
+                }
+               
+
+            } else {
+                if (arg !== null && typeof arg !== "undefined") {
+                    list.push(arg);
+                }
             }
         }
-    }
 
-    return new Selected(list);
+        return new selected(list);
+
+    };
+
 };
 
+var from = function (parent) {
+    if (typeof parent === "string") {
+        parent = selector(parent).first();
+    }
+    return new fromSelect(parent);
+};
+
+var selector = function () {
+    var args = [];
+    if (arguments.length > 0) {
+        args = arguments[0];
+    }
+    return from(document).select(args);
+};
+ 

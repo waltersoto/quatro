@@ -22,14 +22,7 @@ function Instance(newPlugins) {
     }
 };
 
-Instance.prototype.forEach = function (fn) {
-    ///	<summary>
-    ///	Iterate over objects  
-    ///	</summary>
-    ///	<param name="fn" type="function">
-    ///	 Function to be executed for each element.
-    ///	</param>
-    ///	<returns type="this" />
+Instance.prototype.forEach = function (fn) { 
     for (var i = 0, m = this.me.length; i < m; i++) {
         if (typeof fn === IS_FUNCTION) {
             fn.call(this.me[i]);
@@ -55,7 +48,7 @@ function Quatro() {
     if (arguments.length > 0) {
         for (var i = 0, m = arguments.length; i < m; i++) {
 
-            select(arguments[i]).each(function (e) {
+            selector(arguments[i]).each(function (e) {
                 if (typeof e.length !== "undefined") {
                     if (e.length > 0) {
                         for (var le = 0, lm = e.length; le < lm; le++) {

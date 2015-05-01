@@ -1,5 +1,4 @@
 ﻿
-
 var IS_FUNCTION = "function";
 
 function notNullOrUndefined(o) {

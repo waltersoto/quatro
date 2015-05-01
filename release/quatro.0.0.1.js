@@ -25,7 +25,6 @@ SOFTWARE.
 (function () {
     
 
-
 var IS_FUNCTION = "function";
 
 function notNullOrUndefined(o) {
@@ -53,7 +52,7 @@ function parseXml(text) {
 
 
 
-var Selected = function(l) {
+var selected = function(l) {
     var lst = l;
     this.count = function() {
         return lst.length;
@@ -100,134 +99,95 @@ var Selected = function(l) {
                 }
             }
         }
-        return new Selected(subset);
+        return new selected(subset);
     }
 };
 
-var select = function () {
-    var list = [];
-    var doc = document;
-    var multiple = function (arr) {
-        for (var multi = 0, max = arr.length; multi < max; multi++) {
-            list.push(arr[multi]);
-        }
-    };
-    var $c = function (action) {
-        var elem = action;
-        if (elem !== null && typeof elem !== "undefined") {
-            if (elem.length === 0) {
-                if (elem.length === 1) {
-                    list.push(elem[0]);
-                    return true;
-                } else if (elem.length > 1) {
-                    multiple(elem);
-                    return true;
-                }
-            } else {
-                list.push(elem);
-                return true;
+var fromSelect = function (parent) {
+
+    this.select = function() {
+
+        var list = [];
+        var doc = parent || document;
+        var multiple = function (arr) {
+            for (var multi = 0, max = arr.length; multi < max; multi++) {
+                list.push(arr[multi]);
             }
-        }
-
-        return false;
-    };
-    for (var i = 0, m = arguments.length; i < m; i++) {
-        var arg = arguments[i];
-        if (typeof arg === "string") {
-
-            if (arg.length > 0 && arg.charAt(0) === ".") {
-                if (doc.getElementsByClassName) {
-                    if ($c(doc.getElementsByClassName(arg.substring(1)))) {
-                        continue;
+        };
+        var $c = function (action) {
+            var elem = action;
+            if (elem !== null && typeof elem !== "undefined") {
+                if (!elem.length) {
+                    list.push(elem);
+                }else if (elem.length > 0) {
+                    if (elem.length === 1) {
+                        list.push(elem[0]);
+                        return true;
+                    } else if (elem.length > 1) {
+                        multiple(elem);
+                        return true;
                     }
                 }
             }
 
-            if ($c(doc.getElementById(arg))) {
-                continue;
-            }
+            return false;
+        };
+        for (var i = 0, m = arguments.length; i < m; i++) {
+            var arg = arguments[i];
+      
+            if (typeof arg === "string") {
 
-            if ($c(doc.getElementsByTagName(arg))) {
-                continue;
-            }
-
-            if ($c(doc.getElementsByName(arg))) {
-                continue;
-            }
-
-            if (doc.querySelectorAll) {
-                if ($c(doc.querySelectorAll(arg))) {
+                if (arg.length > 0 && arg.charAt(0) === ".") { 
+                    if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
+                        continue;
+                    } 
+                }
+              
+                if (doc.getElementById && $c(doc.getElementById(arg))) {
                     continue;
                 }
-            }
 
-        } else {
-            if (arg !== null && typeof arg !== "undefined") {
-                list.push(arg);
-            }
-        }
-    }
-
-    return new Selected(list);
-};
-
-
-
-
-var onload = function (callback) {
-    ///	<summary>
-    /// Execute callback function when window is loaded
-    ///	</summary>
-    ///	<param name="callback" type="function">
-    /// Function to execute.
-    ///	</param>
-    var current = window.onload;
-    if (typeof window.onload !== IS_FUNCTION) {
-        window.onload = callback;
-    } else {
-        if (typeof callback === IS_FUNCTION) {
-            window.onload = function () {
-                if (current) {
-                    current();
+                if ($c(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
+                    continue;
                 }
-                callback();
-            };
+
+                if ($c(doc.getElementsByName && doc.getElementsByName(arg))) {
+                    continue;
+                }
+                 
+                if ($c(doc.querySelectorAll && doc.querySelectorAll(arg))) {
+                    continue;
+                }
+               
+
+            } else {
+                if (arg !== null && typeof arg !== "undefined") {
+                    list.push(arg);
+                }
+            }
         }
-    }
+
+        return new selected(list);
+
+    };
+
 };
 
-var readyExecuted = false;
-var onReadyFn = null;
-var ready = function (callback) {
-    ///	<summary>
-    /// Execute callback function when DOM is ready
-    ///	</summary>
-    ///	<param name="callback" type="function">
-    /// Function to execute.
-    ///	</param>
-    if (typeof onReadyFn !== IS_FUNCTION) {
-        onReadyFn = callback;
-    } else {
-        var current = onReadyFn;
-        onReadyFn = function () {
-            if (current) {
-                current();
-            }
-            callback();
-        };
+var from = function (parent) {
+    if (typeof parent === "string") {
+        parent = selector(parent).first();
     }
-
-    if (document.addEventListener) {
-        document.addEventListener("DOMContentLoaded", function () {
-            if (!readyExecuted) {
-                onReadyFn();
-                readyExecuted = true;
-            }
-        }, false);
-    } else {
-        onload(callback);
-    }
+    return new fromSelect(parent);
 };
+
+var selector = function () {
+    var args = [];
+    if (arguments.length > 0) {
+        args = arguments[0];
+    }
+    return from(document).select(args);
+};
+ 
 
 
 var plugins = {
@@ -254,14 +214,7 @@ function Instance(newPlugins) {
     }
 };
 
-Instance.prototype.forEach = function (fn) {
-    ///	<summary>
-    ///	Iterate over objects  
-    ///	</summary>
-    ///	<param name="fn" type="function">
-    ///	 Function to be executed for each element.
-    ///	</param>
-    ///	<returns type="this" />
+Instance.prototype.forEach = function (fn) { 
     for (var i = 0, m = this.me.length; i < m; i++) {
         if (typeof fn === IS_FUNCTION) {
             fn.call(this.me[i]);
@@ -287,7 +240,7 @@ function Quatro() {
     if (arguments.length > 0) {
         for (var i = 0, m = arguments.length; i < m; i++) {
 
-            select(arguments[i]).each(function (e) {
+            selector(arguments[i]).each(function (e) {
                 if (typeof e.length !== "undefined") {
                     if (e.length > 0) {
                         for (var le = 0, lm = e.length; le < lm; le++) {
@@ -349,11 +302,277 @@ Quatro.plugin = function (extension) {
     }
 };
 
+
+ 
+
+ 
+
+
+
+
+var onload = function (callback) {
+    ///	<summary>
+    ///	Execute a callback after the window load
+    ///	</summary>
+    ///	<param name="callback" type="function">
+    ///	 Callback function
+    ///	</param>
+    var current = window.onload;
+    if (typeof window.onload !== IS_FUNCTION) {
+        window.onload = callback;
+    } else {
+        if (typeof callback === IS_FUNCTION) {
+            window.onload = function () {
+                if (current) {
+                    current();
+                }
+                callback();
+            };
+        }
+    }
+};
+
+var readyExecuted = false;
+var onReadyFn = null;
+var ready = function (callback) {
+    ///	<summary>
+    ///	Execute a callback after the document is ready
+    ///	</summary>
+    ///	<param name="callback" type="function">
+    ///	 Callback function
+    ///	</param>
+    if (typeof onReadyFn !== IS_FUNCTION) {
+        onReadyFn = callback;
+    } else {
+        var current = onReadyFn;
+        onReadyFn = function () {
+            if (current) {
+                current();
+            }
+            callback();
+        };
+    }
+
+    if (document.addEventListener) {
+        document.addEventListener("DOMContentLoaded", function () {
+            if (!readyExecuted) {
+                onReadyFn();
+                readyExecuted = true;
+            }
+        }, false);
+    } else {
+        onload(callback);
+    }
+};
+
 Quatro.ready = ready;
- 
+Quatro.onload = onload;
 
- 
+var eventHandler = function(elem,event, callback, remove) {
+    if (notNullOrUndefined(elem)) {
+        if (elem.addEventListener) {
+            if (event.substring(0, 2) === "on") {
+                event = event.substring(2);
+            }
+            if (remove) {
+                elem.removeEventListener(event, callback, false);
+            } else {
+                elem.addEventListener(event, callback, false);
+            }
+            
+        } else if (elem.attachEvent) {
+            if (event.length > 2) {
+                if (event.substring(0, 2) !== "on") {
+                    event = "on" + event;
+                }
+            }
+            if (remove) {
+                elem.detachEvent(event, callback);
+            } else {
+                elem.attachEvent(event, callback);
+            }
+            
+        }
+    }
+};
 
+Instance.prototype.addEvent = function (event,callback) {
+    ///	<summary>
+    /// Attach an event to an element
+    ///	</summary> 
+    ///	<param name="event" type="string">
+    /// Event name
+    ///	</param>
+    ///	<param name="callback" type="function">
+    /// Function to execute
+    ///	</param>
+    ///	<returns type="this" />
+    this.forEach(function() {
+        eventHandler(this,event, callback, false);
+    });
+    
+    return this;
+};
+
+Instance.prototype.removeEvent = function (event, callback) {
+    ///	<summary>
+    /// Detach an event from a element.
+    ///	</summary> 
+    ///	<param name="event" type="string">
+    /// Event name
+    ///	</param>
+    ///	<param name="callback" type="function">
+    /// Function to remove
+    ///	</param>
+    ///	<returns type="this" />
+    this.forEach(function () {
+        eventHandler(this, event, callback, true);
+    });
+    return this;
+};
+
+Instance.prototype.delegate = function (child, delegatedEvent, callback) {
+    ///	<summary>
+    ///	Delegate event handling to a parent
+    ///	</summary>
+    ///	<param name="child" type="string">
+    ///	 child tag, identifier, or selector
+    ///	</param> 
+    ///	<param name="delegatedEvent" type="string">
+    ///	 Action or event to delegate
+    ///	</param> 
+    ///	<param name="callback" type="string">
+    ///	 Function to execute
+    ///	</param> 
+    ///	<returns type="this" />
+    this.forEach(function () {
+      
+        eventHandler(this, delegatedEvent,function(event) {
+            event = event || window.event;
+            var target = event.target || event.srcElement;
+            from(this).select(child).each(function (e) {
+                if (target.id.length > 0) {
+                    if (target.id === e.id) { callback.call(e); }
+                } else {
+                    if (target === e) { callback.call(e); }
+                }
+            } );
+
+        }, false);
+
+    });
+    return this;
+};
+
+Instance.prototype.onClick = function (callback) {
+    ///	<summary>
+    ///	Add an onclick event
+    ///	</summary>
+    ///	<param name="callback" type="function">
+    ///	 Callback function
+    ///	</param>
+    ///	<returns type="this" /> 
+    this.forEach(function () { 
+        eventHandler(this, "click", callback);
+    });
+    return this;
+};
+
+Instance.prototype.onMouseOver = function (callback) {
+    ///	<summary>
+    ///	Add an onMouseOver event
+    ///	</summary>
+    ///	<param name="callback" type="function">
+    ///	 Callback function
+    ///	</param>
+    ///	<returns type="this" /> 
+    this.forEach(function () { 
+        eventHandler(this, "mouseover", callback);
+    });
+    return this;
+};
+
+Instance.prototype.onMouseOut = function (callback) {
+    ///	<summary>
+    ///	Add an onMouseOut event
+    ///	</summary>
+    ///	<param name="callback" type="function">
+    ///	 Callback function
+    ///	</param>
+    ///	<returns type="this" /> 
+    this.forEach(function () {
+        eventHandler(this,"mouseout", callback);
+    });
+    return this;
+};
+
+
+Instance.prototype.text = function (content) {
+    /// <signature>
+    ///	<summary>
+    ///	Read content from textContent, innerHTML, or value
+    ///	</summary> 
+    ///	<returns type="string|string[]" /> 
+    /// </signature>
+    /// <signature>
+    ///	<summary>
+    ///	Set content to an element's innerHTML or value.
+    ///	</summary>
+    ///	<param name="content" type="string">
+    ///	 Content to be set
+    ///	</param>
+    ///	<returns type="this" /> 
+    /// </signature>
+
+    var result = [];
+    var returnVal = (typeof content === "undefined");
+
+    this.forEach(function () {
+        var t = this;
+        var usevalue = (t.tagName.toLowerCase() === "input" || t.tagName.toLowerCase() === "textarea");
+        var isSelect = (t.tagName === "SELECT");
+        if (returnVal) {
+            if (isSelect) {
+                //Read select/option value:
+                if (t.multiple) {
+                    for (var i = 0, m = t.length; i < m; i++) {
+                        if (t.options[i].selected) {
+                            result.push(t.options[i].value);
+                        }
+                    }
+                } else {
+                    result.push(t.options[t.selectedIndex].value);
+                }
+            } else {
+                result.push(usevalue ? t.value : t.innerHTML);
+            }
+
+        } else {
+            if (usevalue) {
+                t.value = content;
+            } else {
+                if (t.textContent) {
+                    t.textContent = content;
+                } else {
+                    t.innerHTML = content;
+                }
+
+            }
+        }
+    });
+
+    if (returnVal) {
+        if (result.length > 0) {
+            if (result.length > 1) {
+                return result;
+            }
+            return result[0];
+        }
+        return "";
+    }
+
+    return this;
+};
 
 
 
