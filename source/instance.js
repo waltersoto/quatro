@@ -117,7 +117,7 @@ Quatro.plugin = function (extension) {
     }
 };
 
-Quatro.ready = ready;
+
  
 
  

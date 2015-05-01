@@ -4,9 +4,9 @@
 
 //{select.js}
 
-//{events.js}
-
 //{instance.js}
+
+//{events.js}
 
 //{alias.js}
 

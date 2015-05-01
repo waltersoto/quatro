@@ -53,3 +53,10 @@ var ready = function (callback) {
         onload(callback);
     }
 };
+
+Quatro.ready = ready;
+Quatro.onload = onload;
+
+Instance.prototype.addEvent = function () {
+
+};
