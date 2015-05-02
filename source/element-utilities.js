@@ -65,3 +65,83 @@ Instance.prototype.text = function (content) {
 
     return this;
 };
+
+var Attributes = function(list, name) {
+
+    this.value = function (val) {
+        /// <signature>
+        ///   <summary>Set an attribute value</summary>
+        ///   <param name="val" type="string">Attribute value</param> 
+        ///	  <returns type="this" /> 
+        /// </signature> 
+        each(list, function() {
+            this.setAttribute(name, val);
+        });
+    };
+
+    this.read = function () {
+        /// <signature>
+        ///   <summary>Read attribute from element</summary>
+        ///   <param name="name" type="string">Attribute name</param> 
+        ///	  <returns type="string|string[]" /> 
+        /// </signature>
+        var r = [];
+        each(list, function() {
+            var t = this.getAttribute(name);
+            if (t) {
+                r.push(t);
+            }
+        });
+
+        if (r.length > 1) {
+            return r;
+        }
+
+        if (r.length === 1) {
+            return r[0];
+        }
+
+        return "";
+    };
+
+    this.any = function() {
+        ///	<summary>
+        ///	Check if attribute exists in an element
+        ///	</summary>
+        /// <param name="name" type="string">Attribute name</param>
+        ///	<returns type="boolean" /> 
+        var result = false;
+
+        each(list, function() {
+            var t = this.getAttribute(name);
+            if (t) {
+                result = true;
+            }
+        });
+
+        return result;
+    };
+
+    this.remove = function() {
+        ///	<summary>
+        ///	Remove an attribute from element
+        ///	</summary>
+        /// <param name="name" type="string">Attribute name</param>
+        each(list, function () {
+           this.removeAttribute(name);  
+        });
+    }
+
+};
+
+Instance.prototype.att = function (name) {
+    /// <signature>
+    ///   <summary>Manage attibutes</summary>
+    ///   <param name="name" type="string">Attribute name</param>
+    /// </signature> 
+
+    return new Attributes(this.me, name);
+    
+};
+
+

@@ -22,12 +22,8 @@ function Instance(newPlugins) {
     }
 };
 
-Instance.prototype.forEach = function (fn) { 
-    for (var i = 0, m = this.me.length; i < m; i++) {
-        if (typeof fn === IS_FUNCTION) {
-            fn.call(this.me[i]);
-        }
-    }
+Instance.prototype.forEach = function (fn) {
+    each(this.me, fn);
     return this;
 };
 

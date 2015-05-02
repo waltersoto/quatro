@@ -516,7 +516,7 @@ Instance.prototype.text = function (content) {
     /// </signature>
     /// <signature>
     ///	<summary>
-    ///	Set content to an element's innerHTML or value.
+    ///	Set content to an element's textContent, innerHTML, or value
     ///	</summary>
     ///	<param name="content" type="string">
     ///	 Content to be set
@@ -573,6 +573,47 @@ Instance.prototype.text = function (content) {
 
     return this;
 };
+
+Instance.prototype.att = function (name, value) {
+    /// <signature>
+    ///   <summary>Read attribute from element</summary>
+    ///   <param name="name" type="string">Attribute name</param> 
+    ///	  <returns type="string|string[]" /> 
+    /// </signature>
+    /// <signature>
+    ///   <summary>Set attribute value</summary>
+    ///   <param name="name" type="string">Attribute name</param>
+    ///   <param name="value" type="string">Attribute value</param> 
+    ///	  <returns type="this" /> 
+    /// </signature> 
+    var r = [];
+    this.forEach(function () {
+        if (notNullOrUndefined(value)) {
+            this.setAttribute(name, value);
+        } else {
+            var t = this.getAttribute(name);
+            if (t) {
+                r.push(t);
+            }
+        }
+    });
+
+    if (notNullOrUndefined(value)) {
+        return this;
+    }
+
+    if (r.length > 1) {
+        return r;
+    }
+
+    if (r.length === 1) {
+        return r[0];
+    }
+
+    return "";
+};
+
+
 
 
 

@@ -23,3 +23,12 @@ function parseXml(text) {
     }
     return xmlDoc;
 }
+
+var each = function(arr, callback) {
+    for (var fi = 0, fm = arr.length; fi < fm; fi++) {
+        if (typeof callback === IS_FUNCTION) {
+            callback.call(arr[fi]);
+        }
+    }
+};
+
