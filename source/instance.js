@@ -41,26 +41,26 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
-    if (arguments.length > 0) {
-        for (var i = 0, m = arguments.length; i < m; i++) {
 
-            selector(arguments[i]).each(function (e) {
-                if (typeof e.length !== "undefined") {
-                    if (e.length > 0) {
-                        for (var le = 0, lm = e.length; le < lm; le++) {
-                            if (typeof e[le] !== "undefined") {
-                                o.push(e[le]);
-                            }
+    each(arguments, function (a) {
+     
+        selector(a).each(function () {
+            if (typeof this.length !== "undefined") {
+                if (this.length > 0) {
+                    for (var le = 0, lm = this.length; le < lm; le++) {
+                        if (typeof this[le] !== "undefined") {
+                            o.push(this[le]);
                         }
-                    } else if (e === window) {
-                        o.push(e);
                     }
-                } else {
-                    o.push(e);
+                } else if (this === window) {
+                    o.push(this);
                 }
-            });
-        }
-    }
+            } else {
+                o.push(this);
+            }
+        });
+
+    },true);
 
     plugins.me = o;
     return new Instance(plugins);
@@ -105,6 +105,25 @@ Quatro.plugin = function (extension) {
         }
     }
 };
+
+Quatro.select = selector;
+
+Instance.prototype.select = function () {
+    ///	<summary>
+    ///  Select element(s) by id, name, class name, or query selector
+    ///	</summary>
+    ///	<returns type="element(s)" />
+    if (this.me.length > 0) {
+        var args = [];
+        if (arguments.length > 0) {
+            args = arguments[0];
+        }
+        return from(this.me[0]).select(args);
+    }
+
+    return [];
+};
+
 
 
  

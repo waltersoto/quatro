@@ -139,11 +139,11 @@ Instance.prototype.delegate = function (child, delegatedEvent, callback) {
         eventHandler(this, delegatedEvent,function(event) {
             event = event || window.event;
             var target = event.target || event.srcElement;
-            from(this).select(child).each(function (e) {
+            from(this).select(child).each(function () {
                 if (target.id.length > 0) {
-                    if (target.id === e.id) { callback.call(e); }
+                    if (target.id === this.id) { callback.call(this); }
                 } else {
-                    if (target === e) { callback.call(e); }
+                    if (target === this) { callback.call(this); }
                 }
             } );
 

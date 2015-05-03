@@ -66,6 +66,36 @@ Instance.prototype.text = function (content) {
     return this;
 };
 
+Instance.prototype.isTextEmpty = function () {
+    ///	<summary>
+    ///	Is the element's textContent, innerHTML, or value empty
+    ///	</summary> 
+    ///	<returns type="Boolean" /> 
+    var r = false;
+    this.forEach(function () { r = Quatro(this).text().replace(/^\s+|\s+$/g, "").length === 0; });
+    return r;
+};
+
+Instance.prototype.clear = function() {
+    ///	<summary>
+    ///	Clear element's textContent, innerHTML, or value.
+    ///	</summary> 
+    ///	<returns type="this" /> 
+    this.forEach(function () { Quatro(this).text(""); });
+};
+
+Instance.prototype.appendText = function (content) {
+    ///	<summary>
+    ///	Append text to an element
+    ///	</summary>
+    ///	<param name="content" type="string">
+    ///	 Content to append
+    ///	</param>  
+    ///	<returns type="this" /> 
+    this.forEach(function () { Quatro(this).text(Quatro(this).text() + content); });
+    return this;
+};
+
 var Attributes = function(list, name) {
 
     this.value = function (val) {
@@ -127,6 +157,7 @@ var Attributes = function(list, name) {
         ///	Remove an attribute from element
         ///	</summary>
         /// <param name="name" type="string">Attribute name</param>
+        /// <returns type="this" /> 
         each(list, function () {
            this.removeAttribute(name);  
         });
@@ -138,10 +169,59 @@ Instance.prototype.att = function (name) {
     /// <signature>
     ///   <summary>Manage attibutes</summary>
     ///   <param name="name" type="string">Attribute name</param>
+    ///   <returns type="this" /> 
     /// </signature> 
 
     return new Attributes(this.me, name);
     
 };
+
+Instance.prototype.remove = function () {
+    ///	<summary>
+    ///	Remove element from DOM
+    ///	</summary>
+    /// <returns type="this" /> 
+    this.forEach(function () {
+        if (this.parentNode) {
+            this.parentNode.removeChild(this);
+        }
+        
+    });
+    return this;
+};
+
+Instance.prototype.removeChildren = function (selector) {
+    /// <signature>
+    ///	<summary>
+    ///	Remove all children nodes
+    ///	</summary> 
+    /// <returns type="this" /> 
+    /// </signature>
+    /// <signature>
+    ///	<summary>
+    ///	Remove all children nodes that match the selector
+    ///	</summary>
+    ///	<param name="selector" type="string">
+    /// Selection expression (ex. .className or ul.className)
+    ///	</param> 
+    /// <returns type="this" />  
+    /// </signature>  
+    this.forEach(function () {
+        if (this.hasChildNodes()) {
+            if (typeof selector === "undefined") {
+                while (this.childNodes.length >= 1) {
+                    this.removeChild(this.firstChild);
+                }
+            } else {
+                from(this).select(selector).each(function() {
+                    Quatro(this).remove();
+                });
+            }
+
+        }
+    });
+
+};
+
 
 

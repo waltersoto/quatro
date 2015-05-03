@@ -50,6 +50,20 @@ function parseXml(text) {
     return xmlDoc;
 }
 
+var each = function(arr, callback,nocall) {
+    for (var fi = 0, fm = arr.length; fi < fm; fi++) {
+        if (typeof callback === IS_FUNCTION) {
+            if (nocall) {
+              callback(arr[fi]); 
+            } else {
+              callback.call(arr[fi]);
+            }
+        }
+    }
+};
+
+
+
 
 
 var selected = function(l) {
@@ -81,7 +95,7 @@ var selected = function(l) {
         if (typeof lst !== "undefined" && lst.length > 0) {
             for (var ei = 0, em = lst.length; ei < em; ei++) {
                 if (typeof callback === "function") {
-                    callback(lst[ei]);
+                    callback.call(lst[ei]);
                 }
             }
         }
@@ -137,7 +151,7 @@ var fromSelect = function (parent) {
       
             if (typeof arg === "string") {
 
-                if (arg.length > 0 && arg.charAt(0) === ".") { 
+                if (arg.length > 0 && arg.charAt(0) === ".") {
                     if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
                         continue;
                     } 
@@ -181,6 +195,10 @@ var from = function (parent) {
 };
 
 var selector = function () {
+    ///	<summary>
+    ///  Select element(s) by id, name, class name, or query selector
+    ///	</summary>
+    ///	<returns type="element(s)" /> 
     var args = [];
     if (arguments.length > 0) {
         args = arguments[0];
@@ -214,12 +232,8 @@ function Instance(newPlugins) {
     }
 };
 
-Instance.prototype.forEach = function (fn) { 
-    for (var i = 0, m = this.me.length; i < m; i++) {
-        if (typeof fn === IS_FUNCTION) {
-            fn.call(this.me[i]);
-        }
-    }
+Instance.prototype.forEach = function (fn) {
+    each(this.me, fn);
     return this;
 };
 
@@ -237,26 +251,26 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
-    if (arguments.length > 0) {
-        for (var i = 0, m = arguments.length; i < m; i++) {
 
-            selector(arguments[i]).each(function (e) {
-                if (typeof e.length !== "undefined") {
-                    if (e.length > 0) {
-                        for (var le = 0, lm = e.length; le < lm; le++) {
-                            if (typeof e[le] !== "undefined") {
-                                o.push(e[le]);
-                            }
+    each(arguments, function (a) {
+     
+        selector(a).each(function () {
+            if (typeof this.length !== "undefined") {
+                if (this.length > 0) {
+                    for (var le = 0, lm = this.length; le < lm; le++) {
+                        if (typeof this[le] !== "undefined") {
+                            o.push(this[le]);
                         }
-                    } else if (e === window) {
-                        o.push(e);
                     }
-                } else {
-                    o.push(e);
+                } else if (this === window) {
+                    o.push(this);
                 }
-            });
-        }
-    }
+            } else {
+                o.push(this);
+            }
+        });
+
+    },true);
 
     plugins.me = o;
     return new Instance(plugins);
@@ -301,6 +315,25 @@ Quatro.plugin = function (extension) {
         }
     }
 };
+
+Quatro.select = selector;
+
+Instance.prototype.select = function () {
+    ///	<summary>
+    ///  Select element(s) by id, name, class name, or query selector
+    ///	</summary>
+    ///	<returns type="element(s)" />
+    if (this.me.length > 0) {
+        var args = [];
+        if (arguments.length > 0) {
+            args = arguments[0];
+        }
+        return from(this.me[0]).select(args);
+    }
+
+    return [];
+};
+
 
 
  
@@ -450,11 +483,11 @@ Instance.prototype.delegate = function (child, delegatedEvent, callback) {
         eventHandler(this, delegatedEvent,function(event) {
             event = event || window.event;
             var target = event.target || event.srcElement;
-            from(this).select(child).each(function (e) {
+            from(this).select(child).each(function () {
                 if (target.id.length > 0) {
-                    if (target.id === e.id) { callback.call(e); }
+                    if (target.id === this.id) { callback.call(this); }
                 } else {
-                    if (target === e) { callback.call(e); }
+                    if (target === this) { callback.call(this); }
                 }
             } );
 
@@ -574,45 +607,222 @@ Instance.prototype.text = function (content) {
     return this;
 };
 
-Instance.prototype.att = function (name, value) {
-    /// <signature>
-    ///   <summary>Read attribute from element</summary>
-    ///   <param name="name" type="string">Attribute name</param> 
-    ///	  <returns type="string|string[]" /> 
-    /// </signature>
-    /// <signature>
-    ///   <summary>Set attribute value</summary>
-    ///   <param name="name" type="string">Attribute name</param>
-    ///   <param name="value" type="string">Attribute value</param> 
-    ///	  <returns type="this" /> 
-    /// </signature> 
-    var r = [];
-    this.forEach(function () {
-        if (notNullOrUndefined(value)) {
-            this.setAttribute(name, value);
-        } else {
+Instance.prototype.isTextEmpty = function () {
+    ///	<summary>
+    ///	Is the element's textContent, innerHTML, or value empty
+    ///	</summary> 
+    ///	<returns type="Boolean" /> 
+    var r = false;
+    this.forEach(function () { r = Quatro(this).text().replace(/^\s+|\s+$/g, "").length === 0; });
+    return r;
+};
+
+Instance.prototype.clear = function() {
+    ///	<summary>
+    ///	Clear element's textContent, innerHTML, or value.
+    ///	</summary> 
+    ///	<returns type="this" /> 
+    this.forEach(function () { Quatro(this).text(""); });
+};
+
+Instance.prototype.appendText = function (content) {
+    ///	<summary>
+    ///	Append text to an element
+    ///	</summary>
+    ///	<param name="content" type="string">
+    ///	 Content to append
+    ///	</param>  
+    ///	<returns type="this" /> 
+    this.forEach(function () { Quatro(this).text(Quatro(this).text() + content); });
+    return this;
+};
+
+var Attributes = function(list, name) {
+
+    this.value = function (val) {
+        /// <signature>
+        ///   <summary>Set an attribute value</summary>
+        ///   <param name="val" type="string">Attribute value</param> 
+        ///	  <returns type="this" /> 
+        /// </signature> 
+        each(list, function() {
+            this.setAttribute(name, val);
+        });
+    };
+
+    this.read = function () {
+        /// <signature>
+        ///   <summary>Read attribute from element</summary>
+        ///   <param name="name" type="string">Attribute name</param> 
+        ///	  <returns type="string|string[]" /> 
+        /// </signature>
+        var r = [];
+        each(list, function() {
             var t = this.getAttribute(name);
             if (t) {
                 r.push(t);
             }
+        });
+
+        if (r.length > 1) {
+            return r;
+        }
+
+        if (r.length === 1) {
+            return r[0];
+        }
+
+        return "";
+    };
+
+    this.any = function() {
+        ///	<summary>
+        ///	Check if attribute exists in an element
+        ///	</summary>
+        /// <param name="name" type="string">Attribute name</param>
+        ///	<returns type="boolean" /> 
+        var result = false;
+
+        each(list, function() {
+            var t = this.getAttribute(name);
+            if (t) {
+                result = true;
+            }
+        });
+
+        return result;
+    };
+
+    this.remove = function() {
+        ///	<summary>
+        ///	Remove an attribute from element
+        ///	</summary>
+        /// <param name="name" type="string">Attribute name</param>
+        /// <returns type="this" /> 
+        each(list, function () {
+           this.removeAttribute(name);  
+        });
+    }
+
+};
+
+Instance.prototype.att = function (name) {
+    /// <signature>
+    ///   <summary>Manage attibutes</summary>
+    ///   <param name="name" type="string">Attribute name</param>
+    ///   <returns type="this" /> 
+    /// </signature> 
+
+    return new Attributes(this.me, name);
+    
+};
+
+Instance.prototype.remove = function () {
+    ///	<summary>
+    ///	Remove element from DOM
+    ///	</summary>
+    /// <returns type="this" /> 
+    this.forEach(function () {
+        if (this.parentNode) {
+            this.parentNode.removeChild(this);
+        }
+        
+    });
+    return this;
+};
+
+Instance.prototype.removeChildren = function (selector) {
+    /// <signature>
+    ///	<summary>
+    ///	Remove all children nodes
+    ///	</summary> 
+    /// <returns type="this" /> 
+    /// </signature>
+    /// <signature>
+    ///	<summary>
+    ///	Remove all children nodes that match the selector
+    ///	</summary>
+    ///	<param name="selector" type="string">
+    /// Selection expression (ex. .className or ul.className)
+    ///	</param> 
+    /// <returns type="this" />  
+    /// </signature>  
+    this.forEach(function () {
+        if (this.hasChildNodes()) {
+            if (typeof selector === "undefined") {
+                while (this.childNodes.length >= 1) {
+                    this.removeChild(this.firstChild);
+                }
+            } else {
+                from(this).select(selector).each(function() {
+                    Quatro(this).remove();
+                });
+            }
+
         }
     });
 
-    if (notNullOrUndefined(value)) {
-        return this;
-    }
-
-    if (r.length > 1) {
-        return r;
-    }
-
-    if (r.length === 1) {
-        return r[0];
-    }
-
-    return "";
 };
 
+
+
+
+
+
+var DisplayManager = function (list) {
+
+    this.inherit = function () {
+        ///	<summary>
+        /// Set 'display' style to 'inherit' 
+        ///	</summary>
+        each(list, function () {
+            this.style.display = "inherit";
+        });
+    }
+    this.show = function () {
+        ///	<summary>
+        /// Set 'display' style to 'block'
+        ///	</summary>
+        each(list, function () {
+            this.style.display =  "block";
+        });
+    };
+
+    this.hide = function () {
+        ///	<summary>
+        /// Set 'display' style to 'none'
+        ///	</summary>
+        each(list, function () {
+            this.style.display = "none";
+        });
+    };
+
+    this.swap = function (inherit) {
+        /// <signature>
+        ///	<summary>
+        /// Swap 'display' style to from 'none' to 'inherit' if true is passed and viceversa
+        ///	</summary>
+        ///	<param name="inherit" type="boolean">
+        /// Use 'inherit' instead of 'block'
+        ///	</param>  
+        /// </signature>
+        /// <signature>
+        ///	<summary>
+        /// Swap 'display' style to from 'none' to 'block' and viceversa
+        ///	</summary> 
+        /// </signature> 
+        each(list, function () {
+            this.style.display = (this.style.display === "none")
+                ? (inherit ? "inherit" : "block") : "none";
+        });
+    };
+};
+
+Instance.prototype.display = function() {
+
+    return new DisplayManager(this.me);
+
+};
 
 
 

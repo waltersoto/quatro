@@ -29,7 +29,7 @@ var selected = function(l) {
         if (typeof lst !== "undefined" && lst.length > 0) {
             for (var ei = 0, em = lst.length; ei < em; ei++) {
                 if (typeof callback === "function") {
-                    callback(lst[ei]);
+                    callback.call(lst[ei]);
                 }
             }
         }
@@ -85,7 +85,7 @@ var fromSelect = function (parent) {
       
             if (typeof arg === "string") {
 
-                if (arg.length > 0 && arg.charAt(0) === ".") { 
+                if (arg.length > 0 && arg.charAt(0) === ".") {
                     if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
                         continue;
                     } 
@@ -129,6 +129,10 @@ var from = function (parent) {
 };
 
 var selector = function () {
+    ///	<summary>
+    ///  Select element(s) by id, name, class name, or query selector
+    ///	</summary>
+    ///	<returns type="element(s)" /> 
     var args = [];
     if (arguments.length > 0) {
         args = arguments[0];

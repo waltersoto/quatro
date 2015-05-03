@@ -10,6 +10,8 @@
 
 //{element-utilities.js}
 
+//{styles.js}
+
 //{alias.js}
 
 })();
