@@ -24,7 +24,10 @@ function parseXml(text) {
     return xmlDoc;
 }
 
-var each = function(arr, callback,nocall) {
+var exitEach = false;
+
+var each = function (arr, callback, nocall) {
+    exitEach = false;
     for (var fi = 0, fm = arr.length; fi < fm; fi++) {
         if (typeof callback === IS_FUNCTION) {
             if (nocall) {
@@ -32,6 +35,9 @@ var each = function(arr, callback,nocall) {
             } else {
               callback.call(arr[fi]);
             }
+        }
+        if (exitEach) {
+            break;
         }
     }
 };

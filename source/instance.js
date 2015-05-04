@@ -23,7 +23,9 @@ function Instance(newPlugins) {
 };
 
 Instance.prototype.forEach = function (fn) {
-    each(this.me, fn);
+  
+    each(this.me,fn);
+
     return this;
 };
 
@@ -64,6 +66,13 @@ function Quatro() {
 
     plugins.me = o;
     return new Instance(plugins);
+};
+
+Quatro.exit = function () {
+    ///	<summary>
+    ///	Exit forEach loop
+    ///	</summary>
+    exitEach = true;
 };
 
 Quatro.extend = function (extension) {
