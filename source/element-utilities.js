@@ -223,5 +223,25 @@ Instance.prototype.removeChildren = function (selector) {
 
 };
 
+Instance.prototype.clone = function (deep) {
+    ///	<summary>
+    ///	Abstracting cloneNode(true)
+    ///	</summary>
+    ///	<param name="deep" type="boolean">
+    ///	True if the children of the node should also be cloned, or false to clone only the specified node.
+    ///	</param>
+    /// <returns type="clone" />
+    if (this.me.length > 0) {
+        if (typeof deep !== "undefined") {
+            deep = true;
+        }
+        return this.me[0].cloneNode(deep);
+    }
+    return null;
+};
+
+
+
+
 
 

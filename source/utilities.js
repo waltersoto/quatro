@@ -11,19 +11,6 @@ function trim(str) {
     return str.replace(/^\s+|\s+$/g, "");
 }
 
-function parseXml(text) {
-    var xmlDoc;
-    if (window.DOMParser) {
-        var xmlParser = new DOMParser();
-        xmlDoc = xmlParser.parseFromString(text, "text/xml");
-    } else {
-        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-        xmlDoc.async = "false";
-        xmlDoc.loadXML(text);
-    }
-    return xmlDoc;
-}
-
 var exitEach = false;
 
 var each = function (arr, callback, nocall) {

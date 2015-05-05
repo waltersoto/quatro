@@ -12,6 +12,8 @@
 
 //{styles.js}
 
+//{async.js}
+
 //{alias.js}
 
 })();

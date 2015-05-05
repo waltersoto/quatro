@@ -162,6 +162,72 @@ var ClassMan = function (list, name) {
 };
 
 Instance.prototype.cls = function (name) {
+    ///	<summary>
+    /// Manage css classes in element
+    ///	</summary>
+    ///	<param name="name" type="string">
+    /// CSS class name
+    ///	</param> 
+    ///	<returns type="classManager" />
     return new ClassMan(this.me, name);
 };
 
+Instance.prototype.style = function() {
+    ///	<summary>
+    ///	Add CSS style elements as parameters.
+    /// Example:
+    /// .style('width:100px',
+    ///      'border:1px solid #333333',
+    ///      'color:#dddddd');
+    ///	</summary>
+    ///	<returns type="this" /> 
+    if (arguments.length >= 1) {
+        var newstyle = [];
+        for (var i = 0, m = arguments.length; i < m; i++) {
+            if (contains(arguments[i], ":")) {
+                newstyle.push(arguments[i]);
+            }
+        }
+        this.forEach(function () {
+            var current = (window.attachEvent) ? this.style.cssText : this.getAttribute("style");
+            if (current == null) {
+                current = "";
+            }
+            var txt = "";
+            var sc = current.split(";");
+            var exclude = [];
+
+            for (var ia = 0, mi = sc.length; ia < mi; ia++) {
+                var term = sc[ia].split(":");
+                for (var a = 0, am = newstyle.length; a < am; a++) {
+                    var nterm = newstyle[a].split(":");
+                    if (nterm[0] === term[0]) {
+                        sc[ia] = newstyle[a];
+                        exclude.push(a);
+                    }
+                }
+                if (sc[ia].length > 1) {
+                    txt += sc[ia].replace(";", "") + ";";
+                }
+            }
+
+            for (var en = 0, enm = exclude.length; en < enm; en++) {
+                newstyle.splice(exclude[en], 1);
+            }
+            for (var ns = 0, nsm = newstyle.length; ns < nsm; ns++) {
+                if (newstyle[ns].length > 1) {
+                    txt += newstyle[ns].replace(";", "") + ";";
+                }
+            }
+            if (window.attachEvent) {
+                this.style.cssText = txt;
+            } else {
+                this.setAttribute("style", txt);
+            }
+
+        });
+
+    }
+
+    return this;
+};
