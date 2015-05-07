@@ -1034,7 +1034,7 @@ var METHOD = {
 
 var RESULT = {
     JSON: "JSON",
-    STRING: "STRING",
+    TEXT: "TEXT",
     XML: "XML",
     STATUS: "STATUS"
 };
@@ -1181,7 +1181,6 @@ var RequestEvents = function () {
 
 
 var call = function (req) {
-
     ///	<summary>
     ///	Perform an Ajax call
     ///	</summary>
@@ -1196,18 +1195,18 @@ var call = function (req) {
     ///      timeout:'wait for response time',
     ///      form:'form name' | 'form object' (Method must be post)
     ///      encode: true | false
-    ///      resultType: 'String'|'Xml'|'Json'|'Status',
+    ///      resultType: 'Text'|'Xml'|'Json'|'Status',
     ///      contentType:'application/x-www-form-urlencoded',
     ///  }
     ///	</param> 
 
     if (req.url) {
-        var format = req.resultType ? req.resultType : RESULT.JSON, parameters = "";
+        var format = typeof req.resultType !== "undefined" ? req.resultType : RESULT.JSON, parameters = "";
         if (req.data) {
             parameters = getParameters(req.data, req.url,
-            (req.encode ? true : false));
+            (typeof req.encode !== "undefined" ? true : false));
         }
-        var reqMethod = req.method ? req.method : method.POST;
+        var reqMethod =  (req.method ? req.method : METHOD.POST);
         var xH = request();
 
         if (xH !== null && typeof xH !== "undefined") {
@@ -1217,33 +1216,34 @@ var call = function (req) {
                     if (xH.responseText.length > 0) {
                         var result;
                         var status = xH.status;
-                        switch (format.toString().toUpperCase()) {
-                            case RESULT.STRING: result = xH.responseText; //Text
-                                break;
-                            case RESULT.XML: result = parseXml(xH.responseText);
-                                break;
-                            case RESULT.JSON: result = xH.responseText;
-                                if (typeof (JSON) !== UNDEFINED) {
-                                    result = JSON.parse(result);
-                                }
-                                break;
-                            case RESULT.STATUS: result = status;
-                                break;
-                            default: result = xH.responseText;
-                                break;
-
-
-                        }
 
                         if (status === 200) {
 
+                            if (typeof callbackQueue[callbackEvents.response] === "function") {
+
+                                switch (format.toString().toUpperCase()) {
+                                    case RESULT.TEXT: result = xH.responseText; //Text
+                                        break;
+                                    case RESULT.XML: result = parseXml(xH.responseText);
+                                        break;
+                                    case RESULT.JSON: result = xH.responseText;
+                                        if (typeof (JSON) !== UNDEFINED) {
+                                            result = JSON.parse(result);
+                                        }
+                                        break;
+                                    case RESULT.STATUS: result = status;
+                                        break;
+                                    default: result = xH.responseText;
+                                        break;
+                                }
+
+                                callbackQueue[callbackEvents.response](result);
+                            }
+
+          
+
                             if (typeof callbackQueue[callbackEvents.header] === "function") {
                                 callbackQueue[callbackEvents.header](xH.getAllResponseHeaders());
-                            }
-                           
-
-                            if (typeof callbackQueue[callbackEvents.response] === "function") {
-                                callbackQueue[callbackEvents.response](result);
                             }
                            
 
@@ -1261,9 +1261,9 @@ var call = function (req) {
             var params = null, reqUrl = req.url;
 
             //Get
-            if (reqMethod.toUpperCase() === method.GET) {
+            if (reqMethod.toUpperCase() === METHOD.GET) {
                 reqUrl += parameters;
-            } else if (reqMethod.toUpperCase() === method.POST) {
+            } else if (reqMethod.toUpperCase() === METHOD.POST) {
                 params = parameters.replace("?", "");
             }
 
@@ -1276,6 +1276,7 @@ var call = function (req) {
                 } 
 
                 xH.open(reqMethod, reqUrl, true);
+                
                 xH.setRequestHeader("Content-Type", contentType);
 
                 if (contentType.toUpperCase() === RESULT.JSON) {
@@ -1295,6 +1296,8 @@ var call = function (req) {
 
     return new RequestEvents();
 };
+
+Quatro.request = call;
 
 
 
