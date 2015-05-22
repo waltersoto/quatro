@@ -33,9 +33,6 @@ function notNullOrUndefined(o) {
 function contains(str, substring) {
     return str.indexOf(substring) !== -1;
 }
-function trim(str) {
-    return str.replace(/^\s+|\s+$/g, "");
-}
 
 var exitEach = false;
 
