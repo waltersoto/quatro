@@ -6,7 +6,10 @@
     { "name": "Walter M. Soto Reyes", "homepage": "https://github.com/waltersoto/quatro" }
   ],
   "ignore":[ 
-       "quatro.min.js", 
-       "bower.json" 
+       "release/quatro.min.js",
+      "bower.json",
+      "source",
+      "LICENSE",
+      "build.json"
     ]
 }
