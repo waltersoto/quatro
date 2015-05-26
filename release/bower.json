@@ -1,0 +1,12 @@
+{
+  "name": "quatro",
+  "version": "1.0.0",
+  "main": [ "js/quatro.js" ],
+  "authors": [
+    { "name": "Walter M. Soto Reyes", "homepage": "https://github.com/waltersoto/quatro" }
+  ],
+  "ignore":[ 
+       "quatro.min.js", 
+       "bower.json" 
+    ]
+}

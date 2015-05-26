@@ -1,10 +1,10 @@
 ﻿{
   "package":"quatro",
-  "version":"0.0.1",
+  "version":"1.0.0",
   "source":"./source",
   "release":"./release",
   "actions":[{ "type":"bundle",
-               "filename":"{package}.{version}.js",
+               "filename":"{package}.js",
 				        "settings":[{"key":"enclose","value":"release.js"},
 							        {"key":"license","value":"license.txt"}] 
 			       },
