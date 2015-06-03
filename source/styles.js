@@ -57,7 +57,7 @@ var classExists = function(parent, name) {
 var replaceClasses = function(parent, oldName, newName) {
     if (typeof parent.className !== "undefined") {
         if (!classExists(parent, newName)) {
-            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), newName);
+            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), " "+newName+" ");
         }
     }
 };
@@ -161,7 +161,7 @@ var ClassMan = function (list, name) {
 
 };
 
-Instance.prototype.cls = function (name) {
+Instance.prototype.withClass = function (name) {
     ///	<summary>
     /// Manage css classes in element
     ///	</summary>
