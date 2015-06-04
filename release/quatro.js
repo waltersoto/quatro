@@ -807,7 +807,7 @@ Instance.prototype.hide = function() {
     });
 };
 
-Instance.prototype.swap = function() {
+Instance.prototype.swap = function(inherit) {
     /// <signature>
     ///	<summary>
     /// Swap 'display' style to from 'none' to 'inherit' if true is passed and viceversa
