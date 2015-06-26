@@ -807,7 +807,7 @@ Instance.prototype.hide = function() {
     });
 };
 
-Instance.prototype.swap = function() {
+Instance.prototype.swap = function(inherit) {
     /// <signature>
     ///	<summary>
     /// Swap 'display' style to from 'none' to 'inherit' if true is passed and viceversa
@@ -1039,7 +1039,7 @@ var RESULT = {
 };
 
 var DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded",
-    UNDEFINED = "undefined";
+       JSON_CONTENT_TYPE = "application/json", UNDEFINED = "undefined";
 
 var parseXml = function(text) {
     var xmlDoc;
@@ -1279,7 +1279,7 @@ var call = function (req) {
                 
                 xH.setRequestHeader("Content-Type", contentType);
 
-                if (contentType.toUpperCase() === RESULT.JSON) {
+                if (contentType.toLocaleLowerCase() === JSON_CONTENT_TYPE) {
                     xH.send(JSON.stringify(req.data));
                 } else {
                     xH.send(params);
