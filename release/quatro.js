@@ -1026,6 +1026,8 @@ Instance.prototype.style = function() {
 var METHOD = {
     POST: "POST",
     GET: "GET",
+    DELETE: "DELETE",
+    PUT:"PUT",
     HEADER: "HEADER"
 };
 
@@ -1258,9 +1260,10 @@ var call = function (req) {
             var params = null, reqUrl = req.url;
 
             //Get
-            if (reqMethod.toUpperCase() === METHOD.GET) {
+            if (reqMethod.toUpperCase() === METHOD.GET ||
+                reqMethod.toUpperCase() === METHOD.DELETE) {
                 reqUrl += parameters;
-            } else if (reqMethod.toUpperCase() === METHOD.POST) {
+            } else {
                 params = parameters.replace("?", "");
             }
 
