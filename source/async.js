@@ -2,9 +2,10 @@
 var METHOD = {
     POST: "POST",
     GET: "GET",
+    DELETE: "DELETE",
+    PUT: "PUT",
     HEADER: "HEADER"
 };
-
 var RESULT = {
     JSON: "JSON",
     TEXT: "TEXT",
@@ -233,13 +234,14 @@ var call = function (req) {
 
             var params = null, reqUrl = req.url;
 
-            //Get
-            if (reqMethod.toUpperCase() === METHOD.GET) {
-                reqUrl += parameters;
-            } else if (reqMethod.toUpperCase() === METHOD.POST) {
+            
+            if (reqMethod.toUpperCase() === METHOD.POST) {
                 params = parameters.replace("?", "");
+            } else {
+                reqUrl += parameters;
             }
 
+            
             if (xH !== null) {
                 
             
