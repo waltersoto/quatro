@@ -43,7 +43,14 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
-
+ 
+    if (arguments.length === 1) {
+        if (typeof arguments[0] === "function") {
+            if (Quatro.ready) {
+                Quatro.ready(arguments[0]);
+            }
+        }
+    }
     each(arguments, function (a) {
      
         selector(a).each(function () {

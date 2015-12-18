@@ -243,7 +243,14 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
-
+ 
+    if (arguments.length === 1) {
+        if (typeof arguments[0] === "function") {
+            if (Quatro.ready) {
+                Quatro.ready(arguments[0]);
+            }
+        }
+    }
     each(arguments, function (a) {
      
         selector(a).each(function () {
@@ -1304,17 +1311,25 @@ Quatro.request = call;
 
 
 
-if (!window.Quatro) {
-    window.Quatro = window["Quatro"] = function () {
+ 
 
-        if (arguments.length > 0) {
-            if (typeof arguments[0] === "function") {
-                Quatro.ready(arguments[0]);
-            } else {
-                return Quatro.apply(this, arguments);
-            }
-        }
-    };
+//if (!window.Quatro) {
+
+//    window.Quatro = window["Quatro"] = function () {
+
+//        if (arguments.length > 0) {
+//            if (typeof arguments[0] === "function") {
+//                Quatro.ready(arguments[0]);
+//            } else {
+//                return Quatro.apply(this, arguments);
+//            }
+//        }
+//    };
+//}
+
+
+if (!window.Quatro) {
+    window.Quatro = window["Quatro"] = Quatro;
 }
 
 if (!window._q) {
