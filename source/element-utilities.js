@@ -76,7 +76,7 @@ Instance.prototype.isTextEmpty = function () {
     return r;
 };
 
-Instance.prototype.clear = function() {
+Instance.prototype.clear = function () {
     ///	<summary>
     ///	Clear element's textContent, innerHTML, or value.
     ///	</summary> 
@@ -96,7 +96,7 @@ Instance.prototype.appendText = function (content) {
     return this;
 };
 
-var Attributes = function(list, name) {
+var Attributes = function (list, name) {
 
     this.value = function (val) {
         /// <signature>
@@ -104,7 +104,7 @@ var Attributes = function(list, name) {
         ///   <param name="val" type="string">Attribute value</param> 
         ///	  <returns type="this" /> 
         /// </signature> 
-        each(list, function() {
+        each(list, function () {
             this.setAttribute(name, val);
         });
     };
@@ -116,33 +116,29 @@ var Attributes = function(list, name) {
         ///	  <returns type="string|string[]" /> 
         /// </signature>
         var r = [];
-        each(list, function() {
+        each(list, function () {
             var t = this.getAttribute(name);
             if (t) {
                 r.push(t);
             }
         });
-
         if (r.length > 1) {
             return r;
         }
-
         if (r.length === 1) {
             return r[0];
         }
-
         return "";
     };
 
-    this.any = function() {
+    this.any = function () {
         ///	<summary>
         ///	Check if attribute exists in an element
         ///	</summary>
         /// <param name="name" type="string">Attribute name</param>
         ///	<returns type="boolean" /> 
         var result = false;
-
-        each(list, function() {
+        each(list, function () {
             var t = this.getAttribute(name);
             if (t) {
                 result = true;
@@ -152,14 +148,14 @@ var Attributes = function(list, name) {
         return result;
     };
 
-    this.remove = function() {
+    this.remove = function () {
         ///	<summary>
         ///	Remove an attribute from element
         ///	</summary>
         /// <param name="name" type="string">Attribute name</param>
         /// <returns type="this" /> 
         each(list, function () {
-           this.removeAttribute(name);  
+            this.removeAttribute(name);
         });
     }
 
@@ -170,10 +166,9 @@ Instance.prototype.att = function (name) {
     ///   <summary>Manage attibutes</summary>
     ///   <param name="name" type="string">Attribute name</param>
     ///   <returns type="this" /> 
-    /// </signature> 
-
+    /// </signature>  
     return new Attributes(this.me, name);
-    
+
 };
 
 Instance.prototype.remove = function () {
@@ -185,7 +180,7 @@ Instance.prototype.remove = function () {
         if (this.parentNode) {
             this.parentNode.removeChild(this);
         }
-        
+
     });
     return this;
 };
@@ -213,7 +208,7 @@ Instance.prototype.removeChildren = function (selector) {
                     this.removeChild(this.firstChild);
                 }
             } else {
-                from(this).select(selector).each(function() {
+                from(this).select(selector).each(function () {
                     Quatro(this).remove();
                 });
             }

@@ -2,6 +2,6 @@
     window.Quatro = window["Quatro"] = Quatro;
 }
 
-if (!window._q) {
-    window._q = window["_q"] = Quatro;
+if (!window.q$) {
+    window.q$ = window["q$"] = Quatro;
 }

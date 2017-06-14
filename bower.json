@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "main": [ "js/quatro.js" ],
   "authors": [
-    { "name": "Walter M. Soto Reyes", "homepage": "https://github.com/waltersoto/quatro" }
+    {
+      "name": "Walter M. Soto Reyes",
+      "homepage": "https://github.com/waltersoto/quatro"
+    }
   ],
-  "ignore":[ 
-       "release/quatro.min.js",
-      "bower.json",
-      "source",
-      "LICENSE",
-      "build.json"
-    ]
+  "ignore": [
+    "release/quatro.min.js",
+    "bower.json",
+    "source",
+    "LICENSE",
+    "build.json"
+  ]
 }

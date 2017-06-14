@@ -1,15 +1,15 @@
 ﻿
- 
-Instance.prototype.show = function() {
+
+Instance.prototype.show = function () {
     ///	<summary>
     /// Set 'display' style to 'block'
     ///	</summary>
-    this.forEach(function() {
-            this.style.display = "block";
-    }); 
+    this.forEach(function () {
+        this.style.display = "block";
+    });
 };
 
-Instance.prototype.hide = function() {
+Instance.prototype.hide = function () {
     ///	<summary>
     /// Set 'display' style to 'none'
     ///	</summary>
@@ -18,7 +18,7 @@ Instance.prototype.hide = function() {
     });
 };
 
-Instance.prototype.swap = function(inherit) {
+Instance.prototype.swap = function (inherit) {
     /// <signature>
     ///	<summary>
     /// Swap 'display' style to from 'none' to 'inherit' if true is passed and viceversa
@@ -38,7 +38,7 @@ Instance.prototype.swap = function(inherit) {
     });
 };
 
-Instance.prototype.inherit = function() {
+Instance.prototype.inherit = function () {
     ///	<summary>
     /// Set 'display' style to 'inherit' 
     ///	</summary>
@@ -50,25 +50,25 @@ Instance.prototype.inherit = function() {
 var startClass = "(?:^|\\s)";
 var endClass = "(?!\\S)";
 
-var classExists = function(parent, name) { 
+var classExists = function (parent, name) {
     return new RegExp(startClass + name + endClass).test(parent.className);
 };
 
-var replaceClasses = function(parent, oldName, newName) {
+var replaceClasses = function (parent, oldName, newName) {
     if (typeof parent.className !== "undefined") {
         if (!classExists(parent, newName)) {
-            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), " "+newName+" ");
+            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), " " + newName + " ");
         }
     }
 };
 
 var ClassMan = function (list, name) {
 
-    this.name = function() {
+    this.name = function () {
         return name;
     };
-    var p = this;
 
+    var contextPointer = this;
 
     this.exists = function () {
         ///	<summary>
@@ -77,52 +77,52 @@ var ClassMan = function (list, name) {
         ///	<returns type="Boolean" /> 
         var result = false;
 
-        each(list, function() {
+        each(list, function () {
             result = classExists(this, name);
             if (result) {
                 Quatro.exit();
             }
         });
-         
         return result;
     };
 
-    this.add = function() {
+    this.add = function () {
         ///	<summary>
         /// Add a css class
         ///	</summary>
         ///	<returns type="this" /> 
-        each(list, function() {
+        each(list, function () {
             if (typeof this.className !== "undefined") {
                 if (this.className.length <= 0) {
                     this.className = name;
-                } else { 
-                    if (!p.exists()) {
+                } else {
+                    if (!contextPointer.exists()) {
                         var current = this.className;
                         this.className = name + " " + current;
                     }
                 }
             }
         });
-        return p;
+
+        return contextPointer;
     };
 
-    this.remove = function() {
+    this.remove = function () {
         ///	<summary>
         /// Remove CSS class
         ///	</summary>
         ///	<returns type="this" />  
-        each(list, function() {
+        each(list, function () {
             if (typeof this.className !== "undefined") {
-                if (p.exists()) {
+                if (contextPointer.exists()) {
                     this.className = this.className.replace(new RegExp(startClass + name + endClass), "");
                 }
             }
-        }); 
-        return p;
+        });
+        return contextPointer;
     };
 
-    this.replaceWith = function(newName) {
+    this.replaceWith = function (newName) {
         ///	<summary>
         /// Replace a CSS class by another
         ///	</summary>
@@ -134,11 +134,11 @@ var ClassMan = function (list, name) {
             replaceClasses(this, name, newName);
         });
 
-         
-        return p;
+
+        return contextPointer;
     };
 
-    this.toggleWith = function(to) {
+    this.toggleWith = function (to) {
         ///	<summary>
         /// Toggle between two CSS classes
         ///	</summary>
@@ -146,17 +146,17 @@ var ClassMan = function (list, name) {
         /// to this class
         ///	</param> 
         ///	<returns type="this" />
-        
-        each(list, function () {
-            if (classExists(this, name)) { 
-                replaceClasses(this, name, to);
-            } else { 
-                replaceClasses(this, to, name);
-            } 
-        });
-         
 
-        return p;
+        each(list, function () {
+            if (classExists(this, name)) {
+                replaceClasses(this, name, to);
+            } else {
+                replaceClasses(this, to, name);
+            }
+        });
+
+
+        return contextPointer;
     };
 
 };
@@ -172,7 +172,7 @@ Instance.prototype.withClass = function (name) {
     return new ClassMan(this.me, name);
 };
 
-Instance.prototype.style = function() {
+Instance.prototype.style = function () {
     ///	<summary>
     ///	Add CSS style elements as parameters.
     /// Example:
@@ -194,23 +194,21 @@ Instance.prototype.style = function() {
                 current = "";
             }
             var txt = "";
-            var sc = current.split(";");
+            var splittedList = current.split(";");
             var exclude = [];
-
-            for (var ia = 0, mi = sc.length; ia < mi; ia++) {
-                var term = sc[ia].split(":");
+            for (var ia = 0, mi = splittedList.length; ia < mi; ia++) {
+                var term = splittedList[ia].split(":");
                 for (var a = 0, am = newstyle.length; a < am; a++) {
                     var nterm = newstyle[a].split(":");
                     if (nterm[0] === term[0]) {
-                        sc[ia] = newstyle[a];
+                        splittedList[ia] = newstyle[a];
                         exclude.push(a);
                     }
                 }
-                if (sc[ia].length > 1) {
-                    txt += sc[ia].replace(";", "") + ";";
+                if (splittedList[ia].length > 1) {
+                    txt += splittedList[ia].replace(";", "") + ";";
                 }
             }
-
             for (var en = 0, enm = exclude.length; en < enm; en++) {
                 newstyle.splice(exclude[en], 1);
             }
@@ -224,10 +222,7 @@ Instance.prototype.style = function() {
             } else {
                 this.setAttribute("style", txt);
             }
-
         });
-
     }
-
     return this;
 };

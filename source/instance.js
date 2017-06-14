@@ -23,9 +23,7 @@ function Instance(newPlugins) {
 };
 
 Instance.prototype.forEach = function (fn) {
-  
-    each(this.me,fn);
-
+    each(this.me, fn);
     return this;
 };
 
@@ -43,7 +41,6 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
- 
     if (arguments.length === 1) {
         if (typeof arguments[0] === "function") {
             if (Quatro.ready) {
@@ -52,7 +49,6 @@ function Quatro() {
         }
     }
     each(arguments, function (a) {
-     
         selector(a).each(function () {
             if (typeof this.length !== "undefined") {
                 if (this.length > 0) {
@@ -68,9 +64,7 @@ function Quatro() {
                 o.push(this);
             }
         });
-
-    },true);
-
+    }, true);
     plugins.me = o;
     return new Instance(plugins);
 };
@@ -136,13 +130,12 @@ Instance.prototype.select = function () {
         }
         return from(this.me[0]).select(args);
     }
-
     return [];
 };
 
 
 
- 
 
- 
+
+
 

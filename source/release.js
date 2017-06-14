@@ -1,19 +1,19 @@
 ﻿(function () {
-    
-//{utilities.js}
 
-//{select.js}
+    //{utilities.js}
 
-//{instance.js}
+    //{select.js}
 
-//{events.js}
+    //{instance.js}
 
-//{element-utilities.js}
+    //{events.js}
 
-//{styles.js}
+    //{element-utilities.js}
 
-//{async.js}
+    //{styles.js}
 
-//{alias.js}
+    //{async.js}
+
+    //{alias.js}
 
 })();

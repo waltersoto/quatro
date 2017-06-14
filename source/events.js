@@ -120,7 +120,7 @@ Instance.prototype.removeEvent = function (event, callback) {
     return this;
 };
 
-Instance.prototype.delegate = function (child, delegatedEvent, callback) {
+Instance.prototype.message = function (child, delegatedEvent, callback) {
     ///	<summary>
     ///	Delegate event handling to a parent
     ///	</summary>

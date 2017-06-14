@@ -23,8 +23,8 @@ SOFTWARE.
 *******************************************************************************/
 
 (function () {
-    
 
+    
 var IS_FUNCTION = "function";
 
 function notNullOrUndefined(o) {
@@ -54,51 +54,49 @@ var each = function (arr, callback, nocall) {
 
 
 
+    
 
-
-var selected = function(l) {
-    var lst = l;
-    this.count = function() {
-        return lst.length;
+var selected = function (selectedItems) {
+    var selectedList = selectedItems;
+    this.count = function () {
+        return selectedList.length;
     };
 
-    this.all = function() {
-        return lst;
+    this.all = function () {
+        return selectedList;
     };
 
-    this.first = function() {
-
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            return lst[0];
+    this.first = function () {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            return selectedList[0];
         }
         return null;
     }
 
-    this.last = function() {
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            return lst[lst.length - 1];
+    this.last = function () {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            return selectedList[selectedList.length - 1];
         }
         return null;
     }
 
-    this.each = function(callback) {
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            for (var ei = 0, em = lst.length; ei < em; ei++) {
+    this.each = function (callback) {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            for (var ei = 0, em = selectedList.length; ei < em; ei++) {
                 if (typeof callback === "function") {
-                    callback.call(lst[ei]);
+                    callback.call(selectedList[ei]);
                 }
             }
         }
     };
 
-    this.where = function(callback) {
+    this.where = function (callback) {
         var subset = [];
-
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            for (var ei = 0, em = lst.length; ei < em; ei++) {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            for (var ei = 0, em = selectedList.length; ei < em; ei++) {
                 if (typeof callback === IS_FUNCTION) {
-                    if (callback(lst[ei])) {
-                        subset.push(lst[ei]);
+                    if (callback(selectedList[ei])) {
+                        subset.push(selectedList[ei]);
                     }
                 }
             }
@@ -108,9 +106,7 @@ var selected = function(l) {
 };
 
 var fromSelect = function (parent) {
-
-    this.select = function() {
-
+    this.select = function () {
         var list = [];
         var doc = parent || document;
         var multiple = function (arr) {
@@ -118,12 +114,12 @@ var fromSelect = function (parent) {
                 list.push(arr[multi]);
             }
         };
-        var $c = function (action) {
+        var $addToList = function (action) {
             var elem = action;
             if (elem !== null && typeof elem !== "undefined") {
                 if (!elem.length) {
                     list.push(elem);
-                }else if (elem.length > 0) {
+                } else if (elem.length > 0) {
                     if (elem.length === 1) {
                         list.push(elem[0]);
                         return true;
@@ -133,48 +129,36 @@ var fromSelect = function (parent) {
                     }
                 }
             }
-
             return false;
         };
         for (var i = 0, m = arguments.length; i < m; i++) {
             var arg = arguments[i];
-      
             if (typeof arg === "string") {
-
                 if (arg.length > 0 && arg.charAt(0) === ".") {
-                    if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
+                    if (doc.getElementsByClassName && $addToList(doc.getElementsByClassName(arg.substring(1)))) {
                         continue;
-                    } 
+                    }
                 }
-              
-                if (doc.getElementById && $c(doc.getElementById(arg))) {
+                if (doc.getElementById && $addToList(doc.getElementById(arg))) {
                     continue;
                 }
-
-                if ($c(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
+                if ($addToList(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
                     continue;
                 }
-
-                if ($c(doc.getElementsByName && doc.getElementsByName(arg))) {
+                if ($addToList(doc.getElementsByName && doc.getElementsByName(arg))) {
                     continue;
                 }
-                 
-                if ($c(doc.querySelectorAll && doc.querySelectorAll(arg))) {
+                if ($addToList(doc.querySelectorAll && doc.querySelectorAll(arg))) {
                     continue;
                 }
-               
-
             } else {
                 if (arg !== null && typeof arg !== "undefined") {
                     list.push(arg);
                 }
             }
         }
-
         return new selected(list);
-
     };
-
 };
 
 var from = function (parent) {
@@ -195,10 +179,10 @@ var selector = function () {
     }
     return from(document).select(args);
 };
- 
 
 
-var plugins = {
+
+    var plugins = {
     me: null
 };
 
@@ -223,9 +207,7 @@ function Instance(newPlugins) {
 };
 
 Instance.prototype.forEach = function (fn) {
-  
-    each(this.me,fn);
-
+    each(this.me, fn);
     return this;
 };
 
@@ -243,7 +225,6 @@ function Quatro() {
     ///   <param name="query selector" type="DOM object">Query selector (Note: works on IE8+)</param> 
     /// </signature>
     var o = [];
- 
     if (arguments.length === 1) {
         if (typeof arguments[0] === "function") {
             if (Quatro.ready) {
@@ -252,7 +233,6 @@ function Quatro() {
         }
     }
     each(arguments, function (a) {
-     
         selector(a).each(function () {
             if (typeof this.length !== "undefined") {
                 if (this.length > 0) {
@@ -268,9 +248,7 @@ function Quatro() {
                 o.push(this);
             }
         });
-
-    },true);
-
+    }, true);
     plugins.me = o;
     return new Instance(plugins);
 };
@@ -336,19 +314,18 @@ Instance.prototype.select = function () {
         }
         return from(this.me[0]).select(args);
     }
-
     return [];
 };
 
 
 
- 
-
- 
 
 
 
 
+
+
+    
 var onload = function (callback) {
     ///	<summary>
     ///	Execute a callback after the window load
@@ -470,7 +447,7 @@ Instance.prototype.removeEvent = function (event, callback) {
     return this;
 };
 
-Instance.prototype.delegate = function (child, delegatedEvent, callback) {
+Instance.prototype.message = function (child, delegatedEvent, callback) {
     ///	<summary>
     ///	Delegate event handling to a parent
     ///	</summary>
@@ -545,7 +522,7 @@ Instance.prototype.onMouseOut = function (callback) {
     return this;
 };
 
-
+    
 Instance.prototype.text = function (content) {
     /// <signature>
     ///	<summary>
@@ -623,7 +600,7 @@ Instance.prototype.isTextEmpty = function () {
     return r;
 };
 
-Instance.prototype.clear = function() {
+Instance.prototype.clear = function () {
     ///	<summary>
     ///	Clear element's textContent, innerHTML, or value.
     ///	</summary> 
@@ -643,7 +620,7 @@ Instance.prototype.appendText = function (content) {
     return this;
 };
 
-var Attributes = function(list, name) {
+var Attributes = function (list, name) {
 
     this.value = function (val) {
         /// <signature>
@@ -651,7 +628,7 @@ var Attributes = function(list, name) {
         ///   <param name="val" type="string">Attribute value</param> 
         ///	  <returns type="this" /> 
         /// </signature> 
-        each(list, function() {
+        each(list, function () {
             this.setAttribute(name, val);
         });
     };
@@ -663,33 +640,29 @@ var Attributes = function(list, name) {
         ///	  <returns type="string|string[]" /> 
         /// </signature>
         var r = [];
-        each(list, function() {
+        each(list, function () {
             var t = this.getAttribute(name);
             if (t) {
                 r.push(t);
             }
         });
-
         if (r.length > 1) {
             return r;
         }
-
         if (r.length === 1) {
             return r[0];
         }
-
         return "";
     };
 
-    this.any = function() {
+    this.any = function () {
         ///	<summary>
         ///	Check if attribute exists in an element
         ///	</summary>
         /// <param name="name" type="string">Attribute name</param>
         ///	<returns type="boolean" /> 
         var result = false;
-
-        each(list, function() {
+        each(list, function () {
             var t = this.getAttribute(name);
             if (t) {
                 result = true;
@@ -699,14 +672,14 @@ var Attributes = function(list, name) {
         return result;
     };
 
-    this.remove = function() {
+    this.remove = function () {
         ///	<summary>
         ///	Remove an attribute from element
         ///	</summary>
         /// <param name="name" type="string">Attribute name</param>
         /// <returns type="this" /> 
         each(list, function () {
-           this.removeAttribute(name);  
+            this.removeAttribute(name);
         });
     }
 
@@ -717,10 +690,9 @@ Instance.prototype.att = function (name) {
     ///   <summary>Manage attibutes</summary>
     ///   <param name="name" type="string">Attribute name</param>
     ///   <returns type="this" /> 
-    /// </signature> 
-
+    /// </signature>  
     return new Attributes(this.me, name);
-    
+
 };
 
 Instance.prototype.remove = function () {
@@ -732,7 +704,7 @@ Instance.prototype.remove = function () {
         if (this.parentNode) {
             this.parentNode.removeChild(this);
         }
-        
+
     });
     return this;
 };
@@ -760,7 +732,7 @@ Instance.prototype.removeChildren = function (selector) {
                     this.removeChild(this.firstChild);
                 }
             } else {
-                from(this).select(selector).each(function() {
+                from(this).select(selector).each(function () {
                     Quatro(this).remove();
                 });
             }
@@ -794,18 +766,18 @@ Instance.prototype.clone = function (deep) {
 
 
 
+    
 
- 
-Instance.prototype.show = function() {
+Instance.prototype.show = function () {
     ///	<summary>
     /// Set 'display' style to 'block'
     ///	</summary>
-    this.forEach(function() {
-            this.style.display = "block";
-    }); 
+    this.forEach(function () {
+        this.style.display = "block";
+    });
 };
 
-Instance.prototype.hide = function() {
+Instance.prototype.hide = function () {
     ///	<summary>
     /// Set 'display' style to 'none'
     ///	</summary>
@@ -814,7 +786,7 @@ Instance.prototype.hide = function() {
     });
 };
 
-Instance.prototype.swap = function(inherit) {
+Instance.prototype.swap = function (inherit) {
     /// <signature>
     ///	<summary>
     /// Swap 'display' style to from 'none' to 'inherit' if true is passed and viceversa
@@ -834,7 +806,7 @@ Instance.prototype.swap = function(inherit) {
     });
 };
 
-Instance.prototype.inherit = function() {
+Instance.prototype.inherit = function () {
     ///	<summary>
     /// Set 'display' style to 'inherit' 
     ///	</summary>
@@ -846,25 +818,25 @@ Instance.prototype.inherit = function() {
 var startClass = "(?:^|\\s)";
 var endClass = "(?!\\S)";
 
-var classExists = function(parent, name) { 
+var classExists = function (parent, name) {
     return new RegExp(startClass + name + endClass).test(parent.className);
 };
 
-var replaceClasses = function(parent, oldName, newName) {
+var replaceClasses = function (parent, oldName, newName) {
     if (typeof parent.className !== "undefined") {
         if (!classExists(parent, newName)) {
-            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), " "+newName+" ");
+            parent.className = parent.className.replace(new RegExp(startClass + oldName + endClass), " " + newName + " ");
         }
     }
 };
 
 var ClassMan = function (list, name) {
 
-    this.name = function() {
+    this.name = function () {
         return name;
     };
-    var p = this;
 
+    var contextPointer = this;
 
     this.exists = function () {
         ///	<summary>
@@ -873,52 +845,52 @@ var ClassMan = function (list, name) {
         ///	<returns type="Boolean" /> 
         var result = false;
 
-        each(list, function() {
+        each(list, function () {
             result = classExists(this, name);
             if (result) {
                 Quatro.exit();
             }
         });
-         
         return result;
     };
 
-    this.add = function() {
+    this.add = function () {
         ///	<summary>
         /// Add a css class
         ///	</summary>
         ///	<returns type="this" /> 
-        each(list, function() {
+        each(list, function () {
             if (typeof this.className !== "undefined") {
                 if (this.className.length <= 0) {
                     this.className = name;
-                } else { 
-                    if (!p.exists()) {
+                } else {
+                    if (!contextPointer.exists()) {
                         var current = this.className;
                         this.className = name + " " + current;
                     }
                 }
             }
         });
-        return p;
+
+        return contextPointer;
     };
 
-    this.remove = function() {
+    this.remove = function () {
         ///	<summary>
         /// Remove CSS class
         ///	</summary>
         ///	<returns type="this" />  
-        each(list, function() {
+        each(list, function () {
             if (typeof this.className !== "undefined") {
-                if (p.exists()) {
+                if (contextPointer.exists()) {
                     this.className = this.className.replace(new RegExp(startClass + name + endClass), "");
                 }
             }
-        }); 
-        return p;
+        });
+        return contextPointer;
     };
 
-    this.replaceWith = function(newName) {
+    this.replaceWith = function (newName) {
         ///	<summary>
         /// Replace a CSS class by another
         ///	</summary>
@@ -930,11 +902,11 @@ var ClassMan = function (list, name) {
             replaceClasses(this, name, newName);
         });
 
-         
-        return p;
+
+        return contextPointer;
     };
 
-    this.toggleWith = function(to) {
+    this.toggleWith = function (to) {
         ///	<summary>
         /// Toggle between two CSS classes
         ///	</summary>
@@ -942,17 +914,17 @@ var ClassMan = function (list, name) {
         /// to this class
         ///	</param> 
         ///	<returns type="this" />
-        
-        each(list, function () {
-            if (classExists(this, name)) { 
-                replaceClasses(this, name, to);
-            } else { 
-                replaceClasses(this, to, name);
-            } 
-        });
-         
 
-        return p;
+        each(list, function () {
+            if (classExists(this, name)) {
+                replaceClasses(this, name, to);
+            } else {
+                replaceClasses(this, to, name);
+            }
+        });
+
+
+        return contextPointer;
     };
 
 };
@@ -968,7 +940,7 @@ Instance.prototype.withClass = function (name) {
     return new ClassMan(this.me, name);
 };
 
-Instance.prototype.style = function() {
+Instance.prototype.style = function () {
     ///	<summary>
     ///	Add CSS style elements as parameters.
     /// Example:
@@ -990,23 +962,21 @@ Instance.prototype.style = function() {
                 current = "";
             }
             var txt = "";
-            var sc = current.split(";");
+            var splittedList = current.split(";");
             var exclude = [];
-
-            for (var ia = 0, mi = sc.length; ia < mi; ia++) {
-                var term = sc[ia].split(":");
+            for (var ia = 0, mi = splittedList.length; ia < mi; ia++) {
+                var term = splittedList[ia].split(":");
                 for (var a = 0, am = newstyle.length; a < am; a++) {
                     var nterm = newstyle[a].split(":");
                     if (nterm[0] === term[0]) {
-                        sc[ia] = newstyle[a];
+                        splittedList[ia] = newstyle[a];
                         exclude.push(a);
                     }
                 }
-                if (sc[ia].length > 1) {
-                    txt += sc[ia].replace(";", "") + ";";
+                if (splittedList[ia].length > 1) {
+                    txt += splittedList[ia].replace(";", "") + ";";
                 }
             }
-
             for (var en = 0, enm = exclude.length; en < enm; en++) {
                 newstyle.splice(exclude[en], 1);
             }
@@ -1020,16 +990,13 @@ Instance.prototype.style = function() {
             } else {
                 this.setAttribute("style", txt);
             }
-
         });
-
     }
-
     return this;
 };
 
 
-
+    
 var METHOD = {
     POST: "POST",
     GET: "GET",
@@ -1047,7 +1014,7 @@ var RESULT = {
 var DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded",
        JSON_CONTENT_TYPE = "application/json", UNDEFINED = "undefined";
 
-var parseXml = function(text) {
+var parseXml = function (text) {
     var xmlDoc;
     if (window.DOMParser) {
         var xmlParser = new DOMParser();
@@ -1082,10 +1049,10 @@ function request() {
 
 function firstSymbol(url) {
     /// <summary>
-    ///     Determine if a parameter will begin with ? or &
+    ///  Determine if a parameter will begin with ? or &
     /// </summary>
     /// <param name="url" type="string">
-    ///     Ajax call url
+    ///  Ajax call url
     /// </param>
     var symbol;
     if (url.indexOf("?") === -1) {
@@ -1182,7 +1149,7 @@ var RequestEvents = function () {
     };
 
 };
- 
+
 
 
 var call = function (req) {
@@ -1211,7 +1178,7 @@ var call = function (req) {
             parameters = getParameters(req.data, req.url,
             (typeof req.encode !== "undefined" ? true : false));
         }
-        var reqMethod =  (req.method ? req.method : METHOD.POST);
+        var reqMethod = (req.method ? req.method : METHOD.POST);
         var xH = request();
 
         if (xH !== null && typeof xH !== "undefined") {
@@ -1245,18 +1212,18 @@ var call = function (req) {
                                 callbackQueue[callbackEvents.response](result);
                             }
 
-          
+
 
                             if (typeof callbackQueue[callbackEvents.header] === "function") {
                                 callbackQueue[callbackEvents.header](xH.getAllResponseHeaders());
                             }
-                           
+
 
                         } else {
                             if (typeof callbackQueue[callbackEvents.error] === "function") {
                                 callbackQueue[callbackEvents.error](status, xH.statusText);
                             }
-                           
+
                         }
                     }
                     xH = null;//End
@@ -1265,24 +1232,24 @@ var call = function (req) {
 
             var params = null, reqUrl = req.url;
 
-            
+
             if (reqMethod.toUpperCase() === METHOD.POST) {
                 params = parameters.replace("?", "");
             } else {
                 reqUrl += parameters;
             }
 
-            
+
             if (xH !== null) {
-                
-            
+
+
                 var contentType = req.contentType ? req.contentType : DEFAULT_CONTENT_TYPE;
                 if (typeof callbackQueue[callbackEvents.timeOut] === "function") {
                     xH.timeout = callbackQueue[callbackEvents.timeOut];
-                } 
+                }
 
                 xH.open(reqMethod, reqUrl, true);
-                
+
                 xH.setRequestHeader("Content-Type", contentType);
 
                 if (contentType.toLocaleLowerCase() === JSON_CONTENT_TYPE) {
@@ -1310,30 +1277,12 @@ Quatro.request = call;
 
 
 
-
- 
-
-//if (!window.Quatro) {
-
-//    window.Quatro = window["Quatro"] = function () {
-
-//        if (arguments.length > 0) {
-//            if (typeof arguments[0] === "function") {
-//                Quatro.ready(arguments[0]);
-//            } else {
-//                return Quatro.apply(this, arguments);
-//            }
-//        }
-//    };
-//}
-
-
-if (!window.Quatro) {
+    if (!window.Quatro) {
     window.Quatro = window["Quatro"] = Quatro;
 }
 
-if (!window._q) {
-    window._q = window["_q"] = Quatro;
+if (!window.q$) {
+    window.q$ = window["q$"] = Quatro;
 }
 
 })();

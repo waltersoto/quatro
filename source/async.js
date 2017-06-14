@@ -16,7 +16,7 @@ var RESULT = {
 var DEFAULT_CONTENT_TYPE = "application/x-www-form-urlencoded",
        JSON_CONTENT_TYPE = "application/json", UNDEFINED = "undefined";
 
-var parseXml = function(text) {
+var parseXml = function (text) {
     var xmlDoc;
     if (window.DOMParser) {
         var xmlParser = new DOMParser();
@@ -51,10 +51,10 @@ function request() {
 
 function firstSymbol(url) {
     /// <summary>
-    ///     Determine if a parameter will begin with ? or &
+    ///  Determine if a parameter will begin with ? or &
     /// </summary>
     /// <param name="url" type="string">
-    ///     Ajax call url
+    ///  Ajax call url
     /// </param>
     var symbol;
     if (url.indexOf("?") === -1) {
@@ -151,7 +151,7 @@ var RequestEvents = function () {
     };
 
 };
- 
+
 
 
 var call = function (req) {
@@ -180,7 +180,7 @@ var call = function (req) {
             parameters = getParameters(req.data, req.url,
             (typeof req.encode !== "undefined" ? true : false));
         }
-        var reqMethod =  (req.method ? req.method : METHOD.POST);
+        var reqMethod = (req.method ? req.method : METHOD.POST);
         var xH = request();
 
         if (xH !== null && typeof xH !== "undefined") {
@@ -214,18 +214,18 @@ var call = function (req) {
                                 callbackQueue[callbackEvents.response](result);
                             }
 
-          
+
 
                             if (typeof callbackQueue[callbackEvents.header] === "function") {
                                 callbackQueue[callbackEvents.header](xH.getAllResponseHeaders());
                             }
-                           
+
 
                         } else {
                             if (typeof callbackQueue[callbackEvents.error] === "function") {
                                 callbackQueue[callbackEvents.error](status, xH.statusText);
                             }
-                           
+
                         }
                     }
                     xH = null;//End
@@ -234,24 +234,24 @@ var call = function (req) {
 
             var params = null, reqUrl = req.url;
 
-            
+
             if (reqMethod.toUpperCase() === METHOD.POST) {
                 params = parameters.replace("?", "");
             } else {
                 reqUrl += parameters;
             }
 
-            
+
             if (xH !== null) {
-                
-            
+
+
                 var contentType = req.contentType ? req.contentType : DEFAULT_CONTENT_TYPE;
                 if (typeof callbackQueue[callbackEvents.timeOut] === "function") {
                     xH.timeout = callbackQueue[callbackEvents.timeOut];
-                } 
+                }
 
                 xH.open(reqMethod, reqUrl, true);
-                
+
                 xH.setRequestHeader("Content-Type", contentType);
 
                 if (contentType.toLocaleLowerCase() === JSON_CONTENT_TYPE) {

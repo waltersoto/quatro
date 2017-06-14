@@ -1,48 +1,46 @@
 ﻿
 
-var selected = function(l) {
-    var lst = l;
-    this.count = function() {
-        return lst.length;
+var selected = function (selectedItems) {
+    var selectedList = selectedItems;
+    this.count = function () {
+        return selectedList.length;
     };
 
-    this.all = function() {
-        return lst;
+    this.all = function () {
+        return selectedList;
     };
 
-    this.first = function() {
-
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            return lst[0];
+    this.first = function () {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            return selectedList[0];
         }
         return null;
     }
 
-    this.last = function() {
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            return lst[lst.length - 1];
+    this.last = function () {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            return selectedList[selectedList.length - 1];
         }
         return null;
     }
 
-    this.each = function(callback) {
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            for (var ei = 0, em = lst.length; ei < em; ei++) {
+    this.each = function (callback) {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            for (var ei = 0, em = selectedList.length; ei < em; ei++) {
                 if (typeof callback === "function") {
-                    callback.call(lst[ei]);
+                    callback.call(selectedList[ei]);
                 }
             }
         }
     };
 
-    this.where = function(callback) {
+    this.where = function (callback) {
         var subset = [];
-
-        if (typeof lst !== "undefined" && lst.length > 0) {
-            for (var ei = 0, em = lst.length; ei < em; ei++) {
+        if (typeof selectedList !== "undefined" && selectedList.length > 0) {
+            for (var ei = 0, em = selectedList.length; ei < em; ei++) {
                 if (typeof callback === IS_FUNCTION) {
-                    if (callback(lst[ei])) {
-                        subset.push(lst[ei]);
+                    if (callback(selectedList[ei])) {
+                        subset.push(selectedList[ei]);
                     }
                 }
             }
@@ -52,9 +50,7 @@ var selected = function(l) {
 };
 
 var fromSelect = function (parent) {
-
-    this.select = function() {
-
+    this.select = function () {
         var list = [];
         var doc = parent || document;
         var multiple = function (arr) {
@@ -62,12 +58,12 @@ var fromSelect = function (parent) {
                 list.push(arr[multi]);
             }
         };
-        var $c = function (action) {
+        var $addToList = function (action) {
             var elem = action;
             if (elem !== null && typeof elem !== "undefined") {
                 if (!elem.length) {
                     list.push(elem);
-                }else if (elem.length > 0) {
+                } else if (elem.length > 0) {
                     if (elem.length === 1) {
                         list.push(elem[0]);
                         return true;
@@ -77,48 +73,36 @@ var fromSelect = function (parent) {
                     }
                 }
             }
-
             return false;
         };
         for (var i = 0, m = arguments.length; i < m; i++) {
             var arg = arguments[i];
-      
             if (typeof arg === "string") {
-
                 if (arg.length > 0 && arg.charAt(0) === ".") {
-                    if (doc.getElementsByClassName && $c(doc.getElementsByClassName(arg.substring(1)))) {
+                    if (doc.getElementsByClassName && $addToList(doc.getElementsByClassName(arg.substring(1)))) {
                         continue;
-                    } 
+                    }
                 }
-              
-                if (doc.getElementById && $c(doc.getElementById(arg))) {
+                if (doc.getElementById && $addToList(doc.getElementById(arg))) {
                     continue;
                 }
-
-                if ($c(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
+                if ($addToList(doc.getElementsByTagName && doc.getElementsByTagName(arg))) {
                     continue;
                 }
-
-                if ($c(doc.getElementsByName && doc.getElementsByName(arg))) {
+                if ($addToList(doc.getElementsByName && doc.getElementsByName(arg))) {
                     continue;
                 }
-                 
-                if ($c(doc.querySelectorAll && doc.querySelectorAll(arg))) {
+                if ($addToList(doc.querySelectorAll && doc.querySelectorAll(arg))) {
                     continue;
                 }
-               
-
             } else {
                 if (arg !== null && typeof arg !== "undefined") {
                     list.push(arg);
                 }
             }
         }
-
         return new selected(list);
-
     };
-
 };
 
 var from = function (parent) {
@@ -139,4 +123,4 @@ var selector = function () {
     }
     return from(document).select(args);
 };
- 
+
